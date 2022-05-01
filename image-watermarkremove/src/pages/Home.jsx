@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Home() {
   return (
-    <section className="w-full h-screen flex flex-col gap-4">
+    <section className="w-full h-screen flex flex-col gap-4 dark:text-slate-400 dark:bg-black">
       <div className="flex w-full h-12 justify-center mt-20">
         <h1 className="text-xl font-bold">วิธีการใช้งาน</h1>
       </div>
@@ -14,7 +14,7 @@ export default function Home() {
       </div>
       <h3 className="flex justify-center text-xl">เว็ปไซต์นี้เป็นงานสำหรับรายวิชา Image Processing</h3>
       <div className="flex w-full h-12 justify-center mb-4">
-        <button className="flex p-4 bg-purple-400 rounded-xl items-center">
+        <button className="flex p-4 bg-purple-400 rounded-xl items-center dark:bg-slate-900">
           เริ่มกันเลย!
         </button>
       </div>
