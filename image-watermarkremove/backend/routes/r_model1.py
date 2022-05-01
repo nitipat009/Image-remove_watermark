@@ -7,7 +7,7 @@ model1 = APIRouter(prefix="/Model1")
 
 
 @model1.post('/')
-async def get_all_chart(data:Model1) :
+async def get_Image(data:Model1) :
     with open("imageToSave.png", "wb") as fh:
         fh.write(base64.decodebytes(data.image_path))
     return data

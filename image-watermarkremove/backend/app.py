@@ -3,7 +3,9 @@ from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
+# routes
 from routes.r_model1 import model1
+from routes.r_model2 import model2
 
 origins = ["*"]
 app = FastAPI()
@@ -17,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(model1)
+app.include_router(model2)
 
 
 if __name__ == "__main__":

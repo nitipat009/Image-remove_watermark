@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import {toBase64} from '../helpers/tobase64'
 
 export default function Model1() {
   //   const [image_path, setFile] = useState(null);
@@ -17,7 +19,6 @@ export default function Model1() {
 
   const handleInput = (text) => (e) => {
     setData({ ...data, [text]: e.target.value });
-    console.log(data);
   };
 
   const showPreview = (file) => (event) => {
@@ -43,13 +44,7 @@ export default function Model1() {
     }
   };
 
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
+  
 
   const requestdata = async () => {
     
@@ -68,7 +63,8 @@ export default function Model1() {
 
 
     // Post
-    const res = await axios.post(`http://localhost:5000/Model1/`, {
+    const req = async() => { 
+        const res = await axios.post(`http://localhost:5000/Model1/`, {
       image_path: data.image_path,
       mask_path: data.mask_path,
       INPUT_DEPTH: data.INPUT_DEPTH,
@@ -77,9 +73,10 @@ export default function Model1() {
       SHOW_STEP: data.SHOW_STEP,
       REG_NOISE: data.REG_NOISE,
       MAX_DIM: data.MAX_DIM,
-    });
+    })
+    }
 
-    console.log(res.data);
+    toast.promise(req , {pending : "Pending..." , error : "Error" , success : "Success"})
   };
 
   return (
