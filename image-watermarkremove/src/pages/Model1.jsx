@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import {toBase64} from '../helpers/tobase64'
+import { toBase64 } from "../helpers/tobase64";
 
 export default function Model1() {
   //   const [image_path, setFile] = useState(null);
@@ -44,11 +44,7 @@ export default function Model1() {
     }
   };
 
-  
-
   const requestdata = async () => {
-    
-    
     // Base64
     data.image_path = await toBase64(data.image_path);
     data.mask_path = await toBase64(data.mask_path);
@@ -57,26 +53,32 @@ export default function Model1() {
       ""
     );
     data.mask_path = String(data.mask_path).replace(
-        /^data:image\/[a-z]+;base64,/,
-        ""
-      );
-
+      /^data:image\/[a-z]+;base64,/,
+      ""
+    );
 
     // Post
-    const req = async() => { 
-        const res = await axios.post(`http://localhost:5000/Model1/`, {
-      image_path: data.image_path,
-      mask_path: data.mask_path,
-      INPUT_DEPTH: data.INPUT_DEPTH,
-      LR: data.LR,
-      TRAINING_STEPS: data.TRAINING_STEPS,
-      SHOW_STEP: data.SHOW_STEP,
-      REG_NOISE: data.REG_NOISE,
-      MAX_DIM: data.MAX_DIM,
-    })
-    }
+    const req = async () => {
+      const res = await axios.post(`http://localhost:5000/Model1/`, {
+        image_path: data.image_path,
+        mask_path: data.mask_path,
+        INPUT_DEPTH: data.INPUT_DEPTH,
+        LR: data.LR,
+        TRAINING_STEPS: data.TRAINING_STEPS,
+        SHOW_STEP: data.SHOW_STEP,
+        REG_NOISE: data.REG_NOISE,
+        MAX_DIM: data.MAX_DIM,
+      });
+    };
 
-    toast.promise(req , {pending : "Pending..." , error : "Error" , success : "Success"})
+    toast
+      .promise(req, {
+        pending: "Pending...",
+        error: "Error",
+        success: "Success",
+      })
+      .then((res) => {})
+      .catch((err) => {});
   };
 
   return (
