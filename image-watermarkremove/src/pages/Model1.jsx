@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { toBase64 } from "../helpers/tobase64";
 
 export default function Model1() {
-  //   const [image_path, setFile] = useState(null);
+  const [image_result, setImage_result] = useState(false);
 
   const [data, setData] = useState({
     image_path: null,
@@ -15,6 +15,7 @@ export default function Model1() {
     SHOW_STEP: 50,
     REG_NOISE: 0.03,
     MAX_DIM: 128,
+    result: "",
   });
 
   const handleInput = (text) => (e) => {
@@ -69,16 +70,21 @@ export default function Model1() {
         REG_NOISE: data.REG_NOISE,
         MAX_DIM: data.MAX_DIM,
       });
+      setImage_result(true);
+      data.result = res.data.image;
+      return res;
     };
 
-    toast
-      .promise(req, {
-        pending: "Pending...",
-        error: "Error",
-        success: "Success",
-      })
-      .then((res) => {})
-      .catch((err) => {});
+    toast.promise(req, {
+      pending: "Pending...",
+      error: "Error",
+      success: "Success",
+    });
+  };
+
+  const handleback = () => {
+    setImage_result(false);
+    data.result = ""
   };
 
   return (
@@ -99,147 +105,160 @@ export default function Model1() {
         {/* Section Pre Process! */}
         <div className="flex flex-row h-full w-full justify-center items-center gap-12 font-bold">
           {/* Input */}
-          <div className="flex flex-col gap-4">
-            <h1>INPUT VARIABLES.</h1>
-            <div className="flex flex-row justify-between items-center">
-              <span className="">INPUT_DEPTH</span>
-              <input
-                type={"number"}
-                placeholder={data.INPUT_DEPTH}
-                value={data.INPUT_DEPTH}
-                onChange={handleInput("INPUT_DEPTH")}
-                className="rounded p-2 bg-gray-200 dark:bg-slate-700"
-              ></input>
-            </div>
+          {!image_result && (
+            <>
+              <div className="flex flex-col gap-4">
+                <h1>INPUT VARIABLES.</h1>
+                <div className="flex flex-row justify-between items-center">
+                  <span className="">INPUT_DEPTH</span>
+                  <input
+                    type={"number"}
+                    placeholder={data.INPUT_DEPTH}
+                    value={data.INPUT_DEPTH}
+                    onChange={handleInput("INPUT_DEPTH")}
+                    className="rounded p-2 bg-gray-200 dark:bg-slate-700"
+                  ></input>
+                </div>
 
-            <div className="flex flex-row justify-between items-center">
-              <span>LR</span>
-              <input
-                type={"number"}
-                placeholder={data.LR}
-                value={data.LR}
-                onChange={handleInput("LR")}
-                className="rounded p-2 bg-gray-200 dark:bg-slate-700"
-              ></input>
-            </div>
+                <div className="flex flex-row justify-between items-center">
+                  <span>LR</span>
+                  <input
+                    type={"number"}
+                    placeholder={data.LR}
+                    value={data.LR}
+                    onChange={handleInput("LR")}
+                    className="rounded p-2 bg-gray-200 dark:bg-slate-700"
+                  ></input>
+                </div>
 
-            <div className="flex flex-row justify-between items-center gap-2">
-              <span>TRAINING_STEPS</span>
-              <input
-                type={"number"}
-                placeholder={data.TRAINING_STEPS}
-                value={data.TRAINING_STEPS}
-                onChange={handleInput("TRAINING_STEPS")}
-                className="rounded p-2 bg-gray-200 dark:bg-slate-700"
-              ></input>
-            </div>
+                <div className="flex flex-row justify-between items-center gap-2">
+                  <span>TRAINING_STEPS</span>
+                  <input
+                    type={"number"}
+                    placeholder={data.TRAINING_STEPS}
+                    value={data.TRAINING_STEPS}
+                    onChange={handleInput("TRAINING_STEPS")}
+                    className="rounded p-2 bg-gray-200 dark:bg-slate-700"
+                  ></input>
+                </div>
 
-            <div className="flex flex-row justify-between items-center">
-              <span>SHOW_STEP</span>
-              <input
-                type={"number"}
-                placeholder={data.SHOW_STEP}
-                value={data.SHOW_STEP}
-                onChange={handleInput("SHOW_STEP")}
-                className="rounded p-2 bg-gray-200 dark:bg-slate-700"
-              ></input>
-            </div>
+                <div className="flex flex-row justify-between items-center">
+                  <span>SHOW_STEP</span>
+                  <input
+                    type={"number"}
+                    placeholder={data.SHOW_STEP}
+                    value={data.SHOW_STEP}
+                    onChange={handleInput("SHOW_STEP")}
+                    className="rounded p-2 bg-gray-200 dark:bg-slate-700"
+                  ></input>
+                </div>
 
-            <div className="flex flex-row justify-between items-center">
-              <span>REG_NOISE</span>
-              <input
-                type={"number"}
-                placeholder={data.REG_NOISE}
-                value={data.REG_NOISE}
-                onChange={handleInput("REG_NOISE")}
-                className="rounded p-2 bg-gray-200 dark:bg-slate-700"
-              ></input>
-            </div>
+                <div className="flex flex-row justify-between items-center">
+                  <span>REG_NOISE</span>
+                  <input
+                    type={"number"}
+                    placeholder={data.REG_NOISE}
+                    value={data.REG_NOISE}
+                    onChange={handleInput("REG_NOISE")}
+                    className="rounded p-2 bg-gray-200 dark:bg-slate-700"
+                  ></input>
+                </div>
 
-            <div className="flex flex-row justify-between items-center">
-              <span>MAX_DIM</span>
-              <input
-                type={"number"}
-                placeholder={data.MAX_DIM}
-                value={data.MAX_DIM}
-                onChange={handleInput("MAX_DIM")}
-                className="rounded p-2 bg-gray-200 dark:bg-slate-700"
-              ></input>
-            </div>
-          </div>
-
-          {/* Image */}
-          <div className="flex">
-            <label class="flex flex-col w-full h-64 pt-16">
-              <div class="flex flex-col items-center justify-center pt-7">
-                <img
-                  id="preview"
-                  className="absolute object-cover rounded w-72 h-72 border-4  border-dashed dark:border-slate-400 "
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-12 h-12 text-gray-400 group-hover:text-gray-600"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-                <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-                  Select a photo to remove watermark.
-                </p>
+                <div className="flex flex-row justify-between items-center">
+                  <span>MAX_DIM</span>
+                  <input
+                    type={"number"}
+                    placeholder={data.MAX_DIM}
+                    value={data.MAX_DIM}
+                    onChange={handleInput("MAX_DIM")}
+                    className="rounded p-2 bg-gray-200 dark:bg-slate-700"
+                  ></input>
+                </div>
               </div>
-              <input
-                id="image-upload"
-                type="file"
-                class="opacity-0"
-                accept="image/*"
-                onChange={showPreview(this)}
-              />
-            </label>
-          </div>
-          {/* Mask */}
-          <div className="flex">
-            <label class="flex flex-col w-full h-64 pt-16">
-              <div class="flex flex-col items-center justify-center pt-7">
-                <img
-                  id="preview-mask"
-                  className="absolute object-cover rounded w-72 h-72 border-4  border-dashed dark:border-slate-400 "
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-12 h-12 text-gray-400 group-hover:text-gray-600"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                    clip-rule="evenodd"
+
+              {/* Image */}
+              <div className="flex">
+                <label class="flex flex-col w-full h-64 pt-16">
+                  <div class="flex flex-col items-center justify-center pt-7">
+                    <img
+                      id="preview"
+                      className="absolute object-cover rounded w-72 h-72 border-4  border-dashed dark:border-slate-400 "
+                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-12 h-12 text-gray-400 group-hover:text-gray-600"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
+                      Select a photo to remove watermark.
+                    </p>
+                  </div>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    class="opacity-0"
+                    accept="image/*"
+                    onChange={showPreview(this)}
                   />
-                </svg>
-                <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-                  Select a mask to remove watermark.
-                </p>
+                </label>
               </div>
-              <input
-                id="image-upload"
-                type="file"
-                class="opacity-0"
-                accept="image/*"
-                onChange={showMask(this)}
-              />
-            </label>
-          </div>
+
+              {/* Mask */}
+              <div className="flex">
+                <label class="flex flex-col w-full h-64 pt-16">
+                  <div class="flex flex-col items-center justify-center pt-7">
+                    <img
+                      id="preview-mask"
+                      className="absolute object-cover rounded w-72 h-72 border-4  border-dashed dark:border-slate-400 "
+                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-12 h-12 text-gray-400 group-hover:text-gray-600"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <p class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
+                      Select a mask to remove watermark.
+                    </p>
+                  </div>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    class="opacity-0"
+                    accept="image/*"
+                    onChange={showMask(this)}
+                  />
+                </label>
+              </div>
+            </>
+          )}
+
+          {image_result && (
+            <>
+              <div className="flex w-full h-1/2 justify-center">
+                <img className="object-cover" src={data.result}></img>
+              </div>
+            </>
+          )}
         </div>
         <button
           className="flex p-4 mb-16 bg-purple-400 rounded-xl items-center dark:bg-slate-900"
-          onClick={requestdata}
+          onClick={!image_result ? requestdata : handleback}
         >
-          ดำเนินการ!
+          {!image_result ? "ดำเนินการ!" : "ย้อนกลับ"}
         </button>
       </div>
     </div>
