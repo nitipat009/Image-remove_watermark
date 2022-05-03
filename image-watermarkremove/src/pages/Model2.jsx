@@ -1,15 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { toBase64 } from "../helpers/tobase64";
 
 export default function Model2() {
   useEffect(() => {}, []);
 
+
+  const [image_result, setImage_result] = useState(false);
+
   const [data, setData] = useState({
     image_path: null,
     mask_path: null,
-    BATCH_SIZE: 32,
-    LEARNING_RATE: 0.01,
+    result : ""
   });
 
   const handleInput = (text) => (e) => {
@@ -49,13 +52,32 @@ export default function Model2() {
       ""
     );
 
-    const res = await axios.post(`http://localhost:5000/Model2/`,{
+    const req = async () => {
+      const res = await axios.post(`http://localhost:5000/Model2/`, {
         image_path: data.image_path,
         mask_path: data.mask_path,
-        BATCH_SIZE: data.BATCH_SIZE,
-        LEARNING_RATE: data.LEARNING_RATE,
-      })
+      });
+      
+      data.result = res.data.image;
+      setImage_result(true);
+      return res
+    };
+
+    toast.promise(req, {
+      pending: "Pending...",
+      error: "Error",
+      success: "Success",
+    });
+    
   };
+
+
+
+  const handleback = () => {
+    setImage_result(false);
+    data.result = ""
+  };
+
 
   return (
     <div className="w-full h-screen pt-16 text-black dark:bg-black dark:text-slate-400">
@@ -65,16 +87,16 @@ export default function Model2() {
           <h3 className="font-bold">
             Github :{" "}
             <a
-              href="https://github.com/marcbelmont/cnn-watermark-removal"
+              href="https://github.com/ayulockin/deepimageinpainting"
               target={"_blank"}
             >
-              Cnn-watermark-removal
+              Deep Image Inpainting using UNET
             </a>
           </h3>
         </div>
         {/* Section Pre Process! */}
         <div className="flex flex-row h-full w-full justify-center items-center gap-12 font-bold">
-          {/* Input */}
+          {/* Input
           <div className="flex flex-col gap-4 h-full justify-center">
             <h1>INPUT VARIABLES.</h1>
             <div className="flex flex-row justify-between items-center">
@@ -98,8 +120,8 @@ export default function Model2() {
                 className="rounded p-2 bg-gray-200 dark:bg-slate-700"
               ></input>
             </div>
-          </div>
-
+          </div> */}
+          {!image_result && (<>
           {/* Image */}
           <div className="flex">
             <label class="flex flex-col w-full h-64 pt-16">
@@ -167,9 +189,22 @@ export default function Model2() {
               />
             </label>
           </div>
+          </>)}
+            
+
+          {image_result && (
+            <>
+              <div className="flex w-full h-1/2 justify-center">
+                <img className="object-cover" src={data.result}></img>
+              </div>
+            </>
+          )}
         </div>
-        <button className="flex p-4 mb-16 bg-purple-400 rounded-xl items-center dark:bg-slate-900">
-          ดำเนินการ!
+        <button
+          className="flex p-4 mb-16 bg-purple-400 rounded-xl items-center dark:bg-slate-900"
+          onClick={!image_result ? requestdata : handleback}
+        >
+          {!image_result ? "ดำเนินการ!" : "ย้อนกลับ"}
         </button>
       </div>
     </div>
